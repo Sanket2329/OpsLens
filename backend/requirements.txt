@@ -1,0 +1,49 @@
+# OpsLens Backend Dependencies
+# crewai manages its own transitive deps (pydantic, pydantic-settings, etc.)
+# Do NOT pin those here — let pip resolve them.
+
+# ── Web Framework ─────────────────────────────────────────────────────────────
+fastapi
+uvicorn
+python-multipart
+
+# ── Database ──────────────────────────────────────────────────────────────────
+SQLAlchemy==2.0.51
+alembic==1.18.5
+psycopg==3.3.4
+psycopg-binary==3.3.4
+
+# ── Auth & Security ───────────────────────────────────────────────────────────
+python-jose==3.5.0
+passlib==1.7.4
+bcrypt==4.0.1
+cryptography==49.0.0
+
+# ── Config & Validation (versions controlled by crewai) ──────────────────────
+pydantic-settings
+python-dotenv==1.2.2
+email-validator
+
+# ── Google AI ─────────────────────────────────────────────────────────────────
+google-genai==2.10.0
+
+# ── Vector Database ───────────────────────────────────────────────────────────
+qdrant-client==1.18.0
+
+# ── RAG / Document Processing ─────────────────────────────────────────────────
+langchain-text-splitters
+pypdf==6.14.2
+
+# ── PDF Generation ────────────────────────────────────────────────────────────
+fpdf2==2.8.3
+
+# ── CrewAI (multi-agent deep investigation) ───────────────────────────────────
+crewai==1.15.2
+
+# ── Utils ─────────────────────────────────────────────────────────────────────
+python-slugify==8.0.4
+orjson
+httpx
+slowapi
+celery
+redis

@@ -1,0 +1,48 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ── Node ──────────────────────────────────────────────────────────────────────
+node_modules/
+.output/
+.wrangler/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/
+
+# ── Environment (secrets) ─────────────────────────────────────────────────────
+.env
+backend/.env
+frontend/.env
+# Keep examples in version control
+!.env.example
+!backend/.env.example
+
+# ── Uploads (runtime data, not source) ───────────────────────────────────────
+backend/uploads/
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+**/.DS_Store
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+
+# ── Docker volumes (local dev data) ──────────────────────────────────────────
+*.db
