@@ -23,7 +23,7 @@ OpsLens helps DevOps, SRE, and Platform Engineering teams investigate production
 
 The result? An evidence-backed Root Cause Analysis (RCA) report containing actionable remediation steps in seconds.
 
-## ✨ Enterprise-Grade Features
+##  Enterprise-Grade Features
 
 * 🧠 **Multi-Agent RAG Architecture:** Orchestrates dynamic AI workflows utilizing CrewAI and Qdrant vector search to diagnose outages.
 * ⚡ **Asynchronous Background Processing:** Employs **Celery + Redis** to offload heavy PDF vector embeddings, keeping the API lightning-fast and responsive.
