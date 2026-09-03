@@ -15,7 +15,12 @@ export const Route = createFileRoute("/register")({
 function RegisterPage() {
   const navigate = useNavigate();
   const { register } = useAuth();
-  const [form, setForm] = useState({ organization_name: "", name: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    organization_name: "",
+    name: "",
+    email: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
@@ -32,8 +37,9 @@ function RegisterPage() {
     }
   }
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm((f) => ({ ...f, [k]: e.target.value }));
+  const set =
+    (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm((f) => ({ ...f, [k]: e.target.value }));
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -43,24 +49,49 @@ function RegisterPage() {
             <Sparkles className="h-5 w-5" />
           </div>
           <h1 className="text-lg font-semibold">Create your workspace</h1>
-          <p className="mt-1 text-xs text-muted-foreground">Start investigating incidents with AI</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Start investigating incidents with AI
+          </p>
         </div>
         <form onSubmit={onSubmit} className="space-y-3">
           <div className="space-y-1.5">
             <Label htmlFor="org">Organisation name</Label>
-            <Input id="org" value={form.organization_name} onChange={set("organization_name")} required />
+            <Input
+              id="org"
+              value={form.organization_name}
+              onChange={set("organization_name")}
+              required
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="name">Full name</Label>
-            <Input id="name" value={form.name} onChange={set("name")} required />
+            <Input
+              id="name"
+              value={form.name}
+              onChange={set("name")}
+              required
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" value={form.email} onChange={set("email")} required />
+            <Input
+              id="email"
+              type="email"
+              value={form.email}
+              onChange={set("email")}
+              required
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" value={form.password} onChange={set("password")} required minLength={8} />
+            <Input
+              id="password"
+              type="password"
+              value={form.password}
+              onChange={set("password")}
+              required
+              minLength={8}
+            />
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Creating…" : "Create account"}

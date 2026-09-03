@@ -99,6 +99,24 @@ jobs:
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
+      - name: Start backend services for SSR
+        run: |
+          # Copy example env to .env for docker-compose
+          cp backend/.env.example .env
+          echo 'JWT_SECRET=supersecret' >> .env
+          echo 'GEMINI_API_KEY=test-key' >> .env
+          docker compose up -d postgres qdrant redis api migrate
+          
+          # Wait for API to be healthy
+          echo "Waiting for API to be healthy..."
+          for i in {1..30}; do
+            if curl -s http://localhost:8000/api/v1/health > /dev/null; then
+              echo "API is healthy!"
+              break
+            fi
+            sleep 2
+          done
+
       - name: Install dependencies
         run: |
           cd frontend

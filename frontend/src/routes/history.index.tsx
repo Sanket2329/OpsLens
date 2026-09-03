@@ -31,30 +31,44 @@ export const Route = createFileRoute("/history/")({
 
 function RootCauseStatusBadge({ status }: { status: string }) {
   const map: Record<string, { color: string; icon: React.ReactNode }> = {
-    Confirmed: { color: "text-success", icon: <CheckCircle className="h-3 w-3" /> },
-    Likely: { color: "text-warning", icon: <AlertTriangle className="h-3 w-3" /> },
-    "Unable to Determine": { color: "text-danger", icon: <HelpCircle className="h-3 w-3" /> },
+    Confirmed: {
+      color: "text-success",
+      icon: <CheckCircle className="h-3 w-3" />,
+    },
+    Likely: {
+      color: "text-warning",
+      icon: <AlertTriangle className="h-3 w-3" />,
+    },
+    "Unable to Determine": {
+      color: "text-danger",
+      icon: <HelpCircle className="h-3 w-3" />,
+    },
   };
   const s = map[status] ?? map["Likely"];
   return (
-    <span className={cn("flex items-center gap-1 text-xs font-medium", s.color)}>
-      {s.icon}{status}
+    <span
+      className={cn("flex items-center gap-1 text-xs font-medium", s.color)}
+    >
+      {s.icon}
+      {status}
     </span>
   );
 }
 
 function HistoryPage() {
   const qc = useQueryClient();
-  const [toDelete, setToDelete] = useState<InvestigationHistoryItem | null>(null);
+  const [toDelete, setToDelete] = useState<InvestigationHistoryItem | null>(
+    null,
+  );
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["history"],
-    queryFn: () => api.get<InvestigationHistoryItem[]>("/api/v1/investigate/history"),
+    queryFn: () =>
+      api.get<InvestigationHistoryItem[]>("/api/v1/investigate/history"),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) =>
-      api.del(`/api/v1/investigate/history/${id}`),
+    mutationFn: (id: number) => api.del(`/api/v1/investigate/history/${id}`),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["history"] });
       toast.success("Investigation deleted");
@@ -85,24 +99,36 @@ function HistoryPage() {
             <tbody className="divide-y divide-border">
               {isLoading && (
                 <tr>
-                  <td colSpan={7} className="p-6 text-center text-muted-foreground">
+                  <td
+                    colSpan={7}
+                    className="p-6 text-center text-muted-foreground"
+                  >
                     Loading…
                   </td>
                 </tr>
               )}
               {!isLoading && data.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="p-12 text-center text-muted-foreground">
-                    No investigations yet. Run your first investigation from the Incidents page.
+                  <td
+                    colSpan={7}
+                    className="p-12 text-center text-muted-foreground"
+                  >
+                    No investigations yet. Run your first investigation from the
+                    Incidents page.
                   </td>
                 </tr>
               )}
               {data.map((r) => {
                 const conf = r.confidence;
                 const confColor =
-                  conf >= 75 ? "text-success" : conf >= 50 ? "text-warning" : "text-danger";
+                  conf >= 75
+                    ? "text-success"
+                    : conf >= 50
+                      ? "text-warning"
+                      : "text-danger";
                 const confLevel =
-                  r.confidence_level ?? (conf >= 75 ? "High" : conf >= 50 ? "Medium" : "Low");
+                  r.confidence_level ??
+                  (conf >= 75 ? "High" : conf >= 50 ? "Medium" : "Low");
                 return (
                   <tr key={r.id} className="hover:bg-card-elevated/40">
                     <td className="px-4 py-3">
@@ -124,10 +150,17 @@ function HistoryPage() {
                       </Link>
                     </td>
                     <td className="px-4 py-3">
-                      <RootCauseStatusBadge status={r.root_cause_status ?? "Likely"} />
+                      <RootCauseStatusBadge
+                        status={r.root_cause_status ?? "Likely"}
+                      />
                     </td>
                     <td className="px-4 py-3">
-                      <span className={cn("text-xs font-semibold tabular-nums", confColor)}>
+                      <span
+                        className={cn(
+                          "text-xs font-semibold tabular-nums",
+                          confColor,
+                        )}
+                      >
                         {confLevel} — {conf}%
                       </span>
                     </td>
@@ -159,14 +192,20 @@ function HistoryPage() {
       </div>
 
       {/* Delete confirmation */}
-      <AlertDialog open={!!toDelete} onOpenChange={(open) => !open && setToDelete(null)}>
+      <AlertDialog
+        open={!!toDelete}
+        onOpenChange={(open) => !open && setToDelete(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete investigation?</AlertDialogTitle>
             <AlertDialogDescription>
               This will permanently delete investigation #{toDelete?.id} for{" "}
-              <strong>{toDelete?.incident_title ?? `Incident #${toDelete?.incident_id}`}</strong>.
-              This cannot be undone.
+              <strong>
+                {toDelete?.incident_title ??
+                  `Incident #${toDelete?.incident_id}`}
+              </strong>
+              . This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

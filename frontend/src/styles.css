@@ -138,7 +138,7 @@ html.light {
   --card-elevated: oklch(0.95 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.13 0 0);
-  --primary: oklch(0.50 0.22 275);
+  --primary: oklch(0.5 0.22 275);
   --primary-foreground: oklch(0.98 0 0);
   --secondary: oklch(0.94 0 0);
   --secondary-foreground: oklch(0.13 0 0);
@@ -149,17 +149,17 @@ html.light {
   --destructive: oklch(0.55 0.23 27);
   --destructive-foreground: oklch(0.98 0 0);
   --success: oklch(0.55 0.19 145);
-  --warning: oklch(0.60 0.16 70);
+  --warning: oklch(0.6 0.16 70);
   --danger: oklch(0.55 0.23 27);
   --border: oklch(0.88 0 0);
   --input: oklch(0.88 0 0);
-  --ring: oklch(0.50 0.22 275);
+  --ring: oklch(0.5 0.22 275);
   --sidebar: oklch(0.96 0 0);
   --sidebar-foreground: oklch(0.13 0 0);
-  --sidebar-primary: oklch(0.50 0.22 275);
+  --sidebar-primary: oklch(0.5 0.22 275);
   --sidebar-primary-foreground: oklch(0.98 0 0);
   --sidebar-accent: oklch(0.92 0 0);
   --sidebar-accent-foreground: oklch(0.13 0 0);
   --sidebar-border: oklch(0.86 0 0);
-  --sidebar-ring: oklch(0.50 0.22 275);
+  --sidebar-ring: oklch(0.5 0.22 275);
 }

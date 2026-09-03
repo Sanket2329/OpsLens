@@ -8,7 +8,12 @@ import { Protected } from "@/components/protected";
 import { Button } from "@/components/ui/button";
 import { Markdown } from "@/components/markdown";
 import { PDFViewer } from "@/components/pdf-viewer";
-import { api, type ConversationSummary, type ConversationDetail, type ChatMessage } from "@/lib/api";
+import {
+  api,
+  type ConversationSummary,
+  type ConversationDetail,
+  type ChatMessage,
+} from "@/lib/api";
 import type { DocumentResponse } from "@/routes/documents";
 import { formatRelative } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -28,7 +33,9 @@ function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
-  const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(null);
+  const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(
+    null,
+  );
   const [showDocSelector, setShowDocSelector] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -50,7 +57,9 @@ function ChatPage() {
     setConversationId(id);
     try {
       // Backend returns ConversationDetail { id, title, created_at, messages: [...] }
-      const detail = await api.get<ConversationDetail>(`/api/v1/chat/conversations/${id}`);
+      const detail = await api.get<ConversationDetail>(
+        `/api/v1/chat/conversations/${id}`,
+      );
       setMessages(detail.messages ?? []);
     } catch {
       setMessages([]);
@@ -70,10 +79,13 @@ function ChatPage() {
     setInput("");
     setSending(true);
     try {
-      const res = await api.post<{ answer: string; conversation_id: number }>("/api/v1/chat", {
-        question: text,
-        conversation_id: conversationId,
-      });
+      const res = await api.post<{ answer: string; conversation_id: number }>(
+        "/api/v1/chat",
+        {
+          question: text,
+          conversation_id: conversationId,
+        },
+      );
       setConversationId(res.conversation_id);
       setMessages([...next, { role: "assistant", content: res.answer }]);
       qc.invalidateQueries({ queryKey: ["conversations"] });
@@ -99,7 +111,8 @@ function ChatPage() {
         <aside className="flex w-60 shrink-0 flex-col border-r border-border">
           <div className="p-3">
             <Button className="w-full" size="sm" onClick={newChat}>
-              <Plus className="h-3.5 w-3.5" />New Chat
+              <Plus className="h-3.5 w-3.5" />
+              New Chat
             </Button>
           </div>
           <div className="flex-1 overflow-auto px-2 pb-2">
@@ -114,7 +127,9 @@ function ChatPage() {
                     : "text-muted-foreground hover:bg-card-elevated/60 hover:text-foreground",
                 )}
               >
-                <div className="truncate font-medium">{c.title || "Untitled"}</div>
+                <div className="truncate font-medium">
+                  {c.title || "Untitled"}
+                </div>
                 <div className="text-[10px] text-muted-foreground">
                   {formatRelative(c.created_at)}
                 </div>
@@ -128,15 +143,17 @@ function ChatPage() {
           {/* PDF Previewer Pane */}
           {selectedDocumentId && (
             <div className="flex w-1/2 flex-col border-r border-border bg-card relative">
-              <Button 
-                variant="outline" 
-                size="icon" 
+              <Button
+                variant="outline"
+                size="icon"
                 className="absolute right-4 top-4 z-10 h-8 w-8 rounded-full bg-background/80 backdrop-blur"
                 onClick={() => setSelectedDocumentId(null)}
               >
                 <X className="h-4 w-4" />
               </Button>
-              <PDFViewer url={`${api.baseUrl}/api/v1/documents/${selectedDocumentId}/download`} />
+              <PDFViewer
+                url={`${api.baseUrl}/api/v1/documents/${selectedDocumentId}/download`}
+              />
             </div>
           )}
 
@@ -146,9 +163,9 @@ function ChatPage() {
             <div className="flex items-center justify-between border-b border-border bg-card/50 px-4 py-2">
               <div className="text-sm font-medium">Chat</div>
               <div className="relative">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   className="h-8 gap-2"
                   onClick={() => setShowDocSelector(!showDocSelector)}
                 >
@@ -161,12 +178,13 @@ function ChatPage() {
                       Select Document to Preview
                     </div>
                     <div className="max-h-60 overflow-y-auto">
-                      {docsQuery.data?.map(doc => (
+                      {docsQuery.data?.map((doc) => (
                         <button
                           key={doc.id}
                           className={cn(
                             "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-xs text-left hover:bg-accent hover:text-accent-foreground",
-                            selectedDocumentId === doc.id && "bg-primary/10 text-primary"
+                            selectedDocumentId === doc.id &&
+                              "bg-primary/10 text-primary",
                           )}
                           onClick={() => {
                             setSelectedDocumentId(doc.id);
@@ -174,18 +192,25 @@ function ChatPage() {
                           }}
                         >
                           <FileText className="h-3.5 w-3.5 shrink-0" />
-                          <span className="truncate">{doc.original_filename}</span>
+                          <span className="truncate">
+                            {doc.original_filename}
+                          </span>
                         </button>
                       ))}
                       {(!docsQuery.data || docsQuery.data.length === 0) && (
-                        <div className="p-2 text-center text-xs text-muted-foreground">No documents uploaded</div>
+                        <div className="p-2 text-center text-xs text-muted-foreground">
+                          No documents uploaded
+                        </div>
                       )}
                     </div>
                   </div>
                 )}
                 {/* Click outside overlay */}
                 {showDocSelector && (
-                  <div className="fixed inset-0 z-10" onClick={() => setShowDocSelector(false)} />
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setShowDocSelector(false)}
+                  />
                 )}
               </div>
             </div>
@@ -196,14 +221,19 @@ function ChatPage() {
                   <div className="text-sm font-medium text-foreground">
                     Ask anything about your documentation
                   </div>
-                  <p className="mt-1 text-xs">Chat is grounded on documents you've uploaded.</p>
+                  <p className="mt-1 text-xs">
+                    Chat is grounded on documents you've uploaded.
+                  </p>
                 </div>
               ) : (
                 <div className="mx-auto max-w-3xl space-y-4">
                   {messages.map((m, i) => (
                     <div
                       key={i}
-                      className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}
+                      className={cn(
+                        "flex",
+                        m.role === "user" ? "justify-end" : "justify-start",
+                      )}
                     >
                       <div
                         className={cn(

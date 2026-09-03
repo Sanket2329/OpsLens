@@ -25,7 +25,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { api, type Incident, type IncidentStatus, type Severity, type SeverityDetection } from "@/lib/api";
+import {
+  api,
+  type Incident,
+  type IncidentStatus,
+  type Severity,
+  type SeverityDetection,
+} from "@/lib/api";
 import { formatRelative } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +81,8 @@ function IncidentsPage() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button size="sm">
-              <Plus className="h-3.5 w-3.5" />New Incident
+              <Plus className="h-3.5 w-3.5" />
+              New Incident
             </Button>
           </DialogTrigger>
           <NewIncidentDialog onDone={() => setOpen(false)} />
@@ -109,14 +116,20 @@ function IncidentsPage() {
             <tbody className="divide-y divide-border">
               {isLoading && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                  <td
+                    colSpan={7}
+                    className="px-4 py-8 text-center text-muted-foreground"
+                  >
                     Loading…
                   </td>
                 </tr>
               )}
               {!isLoading && filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
+                  <td
+                    colSpan={7}
+                    className="px-4 py-12 text-center text-muted-foreground"
+                  >
                     No incidents found
                   </td>
                 </tr>
@@ -124,12 +137,16 @@ function IncidentsPage() {
               {filtered.map((i) => (
                 <tr key={i.id} className="hover:bg-card-elevated/40">
                   {/* id is a number — display directly */}
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">#{i.id}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
+                    #{i.id}
+                  </td>
                   <td className="px-4 py-3 font-medium">{i.title}</td>
                   <td className="px-4 py-3">
                     <SeverityBadge severity={i.severity} />
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{i.service}</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {i.service}
+                  </td>
                   <td className="px-4 py-3">
                     <StatusBadge status={i.status} />
                   </td>
@@ -141,7 +158,10 @@ function IncidentsPage() {
                       <Select
                         value={i.status}
                         onValueChange={(v) =>
-                          updateStatus.mutate({ id: i.id, status: v as IncidentStatus })
+                          updateStatus.mutate({
+                            id: i.id,
+                            status: v as IncidentStatus,
+                          })
                         }
                       >
                         <SelectTrigger className="h-8 w-36 text-xs">
@@ -149,7 +169,9 @@ function IncidentsPage() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Open">Open</SelectItem>
-                          <SelectItem value="Investigating">Investigating</SelectItem>
+                          <SelectItem value="Investigating">
+                            Investigating
+                          </SelectItem>
                           <SelectItem value="Resolved">Resolved</SelectItem>
                         </SelectContent>
                       </Select>
@@ -189,12 +211,18 @@ function NewIncidentDialog({ onDone }: { onDone: () => void }) {
     if (form.title.length < 3 || form.description.length < 10) return;
     setDetecting(true);
     try {
-      const result = await api.post<SeverityDetection>("/api/v1/incidents/detect-severity", {
-        title: form.title,
-        description: form.description,
-      });
+      const result = await api.post<SeverityDetection>(
+        "/api/v1/incidents/detect-severity",
+        {
+          title: form.title,
+          description: form.description,
+        },
+      );
       setDetection(result);
-      setForm((f) => ({ ...f, severity: result.suggested_severity as Severity }));
+      setForm((f) => ({
+        ...f,
+        severity: result.suggested_severity as Severity,
+      }));
     } catch {
       // Silent — user can still pick manually
     } finally {
@@ -222,7 +250,11 @@ function NewIncidentDialog({ onDone }: { onDone: () => void }) {
   }
 
   const confColor = detection
-    ? detection.confidence >= 0.7 ? "text-success" : detection.confidence >= 0.4 ? "text-warning" : "text-muted-foreground"
+    ? detection.confidence >= 0.7
+      ? "text-success"
+      : detection.confidence >= 0.4
+        ? "text-warning"
+        : "text-muted-foreground"
     : "";
 
   return (
@@ -259,7 +291,11 @@ function NewIncidentDialog({ onDone }: { onDone: () => void }) {
               <button
                 type="button"
                 onClick={detectSeverity}
-                disabled={detecting || form.title.length < 3 || form.description.length < 10}
+                disabled={
+                  detecting ||
+                  form.title.length < 3 ||
+                  form.description.length < 10
+                }
                 className={cn(
                   "flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium transition",
                   "border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20",
@@ -273,7 +309,10 @@ function NewIncidentDialog({ onDone }: { onDone: () => void }) {
             </div>
             <Select
               value={form.severity}
-              onValueChange={(v) => { setForm({ ...form, severity: v as Severity }); setDetection(null); }}
+              onValueChange={(v) => {
+                setForm({ ...form, severity: v as Severity });
+                setDetection(null);
+              }}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -287,7 +326,8 @@ function NewIncidentDialog({ onDone }: { onDone: () => void }) {
             </Select>
             {detection && (
               <p className={cn("text-[10px] leading-relaxed", confColor)}>
-                {Math.round(detection.confidence * 100)}% confident · {detection.signals.slice(0, 2).join(", ")}
+                {Math.round(detection.confidence * 100)}% confident ·{" "}
+                {detection.signals.slice(0, 2).join(", ")}
               </p>
             )}
           </div>

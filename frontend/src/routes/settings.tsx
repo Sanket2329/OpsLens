@@ -29,8 +29,14 @@ function SettingsPage() {
   useEffect(() => setName(user?.name ?? ""), [user?.name]);
 
   async function save() {
-    if (!name.trim()) { toast.error("Name cannot be empty"); return; }
-    if (name.trim() === user?.name) { toast.info("No changes to save"); return; }
+    if (!name.trim()) {
+      toast.error("Name cannot be empty");
+      return;
+    }
+    if (name.trim() === user?.name) {
+      toast.info("No changes to save");
+      return;
+    }
     setSaving(true);
     try {
       await updateProfile({ name: name.trim() });
@@ -50,7 +56,6 @@ function SettingsPage() {
   return (
     <AppShell title="Settings">
       <div className="mx-auto max-w-2xl space-y-6">
-
         {/* Profile */}
         <section className="rounded-lg border border-border bg-card p-6">
           <h2 className="text-sm font-semibold">Profile</h2>
@@ -93,7 +98,11 @@ function SettingsPage() {
               </div>
               <div className="space-y-1.5">
                 <Label>Organisation ID</Label>
-                <Input value={String(user?.organization_id ?? "")} readOnly disabled />
+                <Input
+                  value={String(user?.organization_id ?? "")}
+                  readOnly
+                  disabled
+                />
               </div>
             </div>
             <Button onClick={save} disabled={saving}>
@@ -120,9 +129,19 @@ function SettingsPage() {
                     : "border-border bg-card-elevated hover:border-primary/40",
                 )}
               >
-                <Icon className={cn("h-5 w-5", theme === value ? "text-primary" : "text-muted-foreground")} />
+                <Icon
+                  className={cn(
+                    "h-5 w-5",
+                    theme === value ? "text-primary" : "text-muted-foreground",
+                  )}
+                />
                 <div>
-                  <p className={cn("text-sm font-medium", theme === value && "text-primary")}>
+                  <p
+                    className={cn(
+                      "text-sm font-medium",
+                      theme === value && "text-primary",
+                    )}
+                  >
                     {label}
                   </p>
                   <p className="text-xs text-muted-foreground">
@@ -136,7 +155,6 @@ function SettingsPage() {
             ))}
           </div>
         </section>
-
       </div>
     </AppShell>
   );

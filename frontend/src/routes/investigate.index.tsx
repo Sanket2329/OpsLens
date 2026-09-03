@@ -30,29 +30,48 @@ function InvestigateIndex() {
               <Sparkles className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold">Pick an incident to investigate</h2>
-              <p className="text-xs text-muted-foreground">Run AI-powered root cause analysis with your indexed documentation.</p>
+              <h2 className="text-sm font-semibold">
+                Pick an incident to investigate
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Run AI-powered root cause analysis with your indexed
+                documentation.
+              </p>
             </div>
           </div>
         </div>
         <div className="overflow-hidden rounded-lg border border-border bg-card">
-          {isLoading && <div className="p-6 text-sm text-muted-foreground">Loading…</div>}
+          {isLoading && (
+            <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+          )}
           {!isLoading && data.length === 0 && (
-            <div className="p-6 text-sm text-muted-foreground">No incidents yet.</div>
+            <div className="p-6 text-sm text-muted-foreground">
+              No incidents yet.
+            </div>
           )}
           <ul className="divide-y divide-border">
             {data.map((i) => (
-              <li key={i.id} className="flex items-center justify-between px-5 py-3">
+              <li
+                key={i.id}
+                className="flex items-center justify-between px-5 py-3"
+              >
                 <div className="min-w-0">
                   <div className="truncate text-sm font-medium">{i.title}</div>
                   <div className="mt-1 flex items-center gap-2">
                     <SeverityBadge severity={i.severity} />
                     <StatusBadge status={i.status} />
-                    <span className="text-xs text-muted-foreground">{i.service}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {i.service}
+                    </span>
                   </div>
                 </div>
                 <Button asChild size="sm">
-                  <Link to="/investigate/$incident_id" params={{ incident_id: i.id }}>Investigate</Link>
+                  <Link
+                    to="/investigate/$incident_id"
+                    params={{ incident_id: i.id }}
+                  >
+                    Investigate
+                  </Link>
                 </Button>
               </li>
             ))}

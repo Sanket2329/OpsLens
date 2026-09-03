@@ -42,7 +42,8 @@ function DashboardPage() {
   });
   const history = useQuery({
     queryKey: ["history"],
-    queryFn: () => api.get<InvestigationHistoryItem[]>("/api/v1/investigate/history"),
+    queryFn: () =>
+      api.get<InvestigationHistoryItem[]>("/api/v1/investigate/history"),
   });
 
   const list = incidents.data ?? [];
@@ -88,14 +89,19 @@ function DashboardPage() {
         {/* Stat cards */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {stats.map((s) => (
-            <div key={s.label} className="rounded-lg border border-border bg-card p-5">
+            <div
+              key={s.label}
+              className="rounded-lg border border-border bg-card p-5"
+            >
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase tracking-wider text-muted-foreground">
                   {s.label}
                 </span>
                 <s.icon className={`h-4 w-4 ${s.tone}`} />
               </div>
-              <div className="mt-3 text-3xl font-semibold tabular-nums">{s.value}</div>
+              <div className="mt-3 text-3xl font-semibold tabular-nums">
+                {s.value}
+              </div>
             </div>
           ))}
         </div>
@@ -104,17 +110,20 @@ function DashboardPage() {
         <div className="flex flex-wrap gap-2">
           <Button asChild size="sm">
             <Link to="/incidents">
-              <Plus className="h-3.5 w-3.5" />New Incident
+              <Plus className="h-3.5 w-3.5" />
+              New Incident
             </Link>
           </Button>
           <Button asChild size="sm" variant="secondary">
             <Link to="/documents">
-              <Upload className="h-3.5 w-3.5" />Upload Document
+              <Upload className="h-3.5 w-3.5" />
+              Upload Document
             </Link>
           </Button>
           <Button asChild size="sm" variant="secondary">
             <Link to="/chat">
-              <MessageSquare className="h-3.5 w-3.5" />Open Chat
+              <MessageSquare className="h-3.5 w-3.5" />
+              Open Chat
             </Link>
           </Button>
         </div>
@@ -133,10 +142,14 @@ function DashboardPage() {
             </header>
             <div className="divide-y divide-border">
               {incidents.isLoading && (
-                <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+                <div className="p-6 text-sm text-muted-foreground">
+                  Loading…
+                </div>
               )}
               {!incidents.isLoading && recent.length === 0 && (
-                <div className="p-6 text-sm text-muted-foreground">No incidents yet.</div>
+                <div className="p-6 text-sm text-muted-foreground">
+                  No incidents yet.
+                </div>
               )}
               {recent.map((i) => (
                 <div
@@ -144,7 +157,9 @@ function DashboardPage() {
                   className="flex items-center justify-between gap-4 px-5 py-3"
                 >
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-medium">{i.title}</div>
+                    <div className="truncate text-sm font-medium">
+                      {i.title}
+                    </div>
                     <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                       <SeverityBadge severity={i.severity} />
                       <StatusBadge status={i.status} />
@@ -179,15 +194,23 @@ function DashboardPage() {
             </header>
             <div className="divide-y divide-border">
               {history.isLoading && (
-                <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+                <div className="p-6 text-sm text-muted-foreground">
+                  Loading…
+                </div>
               )}
               {!history.isLoading && recentInv.length === 0 && (
-                <div className="p-6 text-sm text-muted-foreground">No investigations yet.</div>
+                <div className="p-6 text-sm text-muted-foreground">
+                  No investigations yet.
+                </div>
               )}
               {recentInv.map((r) => {
                 const conf = r.confidence; // 0-100 from backend
                 const color =
-                  conf >= 80 ? "bg-success" : conf >= 50 ? "bg-warning" : "bg-danger";
+                  conf >= 80
+                    ? "bg-success"
+                    : conf >= 50
+                      ? "bg-warning"
+                      : "bg-danger";
                 return (
                   <Link
                     key={r.id}
@@ -212,7 +235,9 @@ function DashboardPage() {
                           style={{ width: `${conf}%` }}
                         />
                       </div>
-                      <span className="w-10 text-right text-xs tabular-nums">{conf}%</span>
+                      <span className="w-10 text-right text-xs tabular-nums">
+                        {conf}%
+                      </span>
                     </div>
                   </Link>
                 );

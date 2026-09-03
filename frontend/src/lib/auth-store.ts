@@ -49,7 +49,10 @@ export const useAuth = create<AuthState>((set) => ({
   },
 
   register: async (data) => {
-    const res = await api.post<{ access_token: string }>("/api/v1/auth/register", data);
+    const res = await api.post<{ access_token: string }>(
+      "/api/v1/auth/register",
+      data,
+    );
     setToken(res.access_token);
     const user = await api.get<User>("/api/v1/auth/me");
     set({ user, token: res.access_token });

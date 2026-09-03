@@ -1,7 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, Brain, CheckCircle, Loader2, Sparkles, Zap } from "lucide-react";
+import {
+  AlertTriangle,
+  Brain,
+  CheckCircle,
+  Loader2,
+  Sparkles,
+  Zap,
+} from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { Protected } from "@/components/protected";
@@ -58,9 +65,19 @@ function ModeCard({
           )}
         >
           {isStandard ? (
-            <Zap className={cn("h-4 w-4", selected ? "text-primary" : "text-muted-foreground")} />
+            <Zap
+              className={cn(
+                "h-4 w-4",
+                selected ? "text-primary" : "text-muted-foreground",
+              )}
+            />
           ) : (
-            <Brain className={cn("h-4 w-4", selected ? "text-warning" : "text-muted-foreground")} />
+            <Brain
+              className={cn(
+                "h-4 w-4",
+                selected ? "text-warning" : "text-muted-foreground",
+              )}
+            />
           )}
         </div>
         <div>
@@ -98,14 +115,21 @@ function ModeCard({
   );
 }
 
-function Chip({ label, color }: { label: string; color: "primary" | "warning" | "muted" }) {
+function Chip({
+  label,
+  color,
+}: {
+  label: string;
+  color: "primary" | "warning" | "muted";
+}) {
   return (
     <span
       className={cn(
         "rounded-full border px-2 py-0.5 text-[10px] font-medium",
         color === "primary" && "border-primary/30 bg-primary/10 text-primary",
         color === "warning" && "border-warning/30 bg-warning/10 text-warning",
-        color === "muted" && "border-border bg-card-elevated text-muted-foreground",
+        color === "muted" &&
+          "border-border bg-card-elevated text-muted-foreground",
       )}
     >
       {label}
@@ -128,7 +152,8 @@ function InvestigationPage() {
 
   const historyQuery = useQuery({
     queryKey: ["history"],
-    queryFn: () => api.get<InvestigationHistoryItem[]>("/api/v1/investigate/history"),
+    queryFn: () =>
+      api.get<InvestigationHistoryItem[]>("/api/v1/investigate/history"),
   });
 
   const existingHistoryItem = historyQuery.data?.find(
@@ -146,7 +171,9 @@ function InvestigationPage() {
   useEffect(() => {
     if (existingHistoryItem && !report && !running) {
       api
-        .get<InvestigationReport>(`/api/v1/investigate/history/${existingHistoryItem.id}`)
+        .get<InvestigationReport>(
+          `/api/v1/investigate/history/${existingHistoryItem.id}`,
+        )
         .then((r) => setReport(r))
         .catch(() => {});
     }
@@ -277,7 +304,6 @@ function InvestigationPage() {
   return (
     <AppShell title="Investigation">
       <div className="mx-auto max-w-7xl space-y-6">
-
         {/* Incident details */}
         {incident && (
           <div className="rounded-lg border border-border bg-card p-5">
@@ -297,20 +323,31 @@ function InvestigationPage() {
         {!report && !running && (
           <div className="space-y-4">
             <div>
-              <h3 className="text-sm font-semibold">Choose investigation mode</h3>
+              <h3 className="text-sm font-semibold">
+                Choose investigation mode
+              </h3>
               <p className="mt-0.5 text-xs text-muted-foreground">
                 Both modes use your indexed documentation as evidence.
               </p>
             </div>
 
             <div className="flex gap-4">
-              <ModeCard mode="standard" selected={mode === "standard"} onSelect={() => setMode("standard")} />
-              <ModeCard mode="crew" selected={mode === "crew"} onSelect={() => setMode("crew")} />
+              <ModeCard
+                mode="standard"
+                selected={mode === "standard"}
+                onSelect={() => setMode("standard")}
+              />
+              <ModeCard
+                mode="crew"
+                selected={mode === "crew"}
+                onSelect={() => setMode("crew")}
+              />
             </div>
 
             {existingHistoryItem && (
               <p className="text-xs text-muted-foreground">
-                A previous investigation exists — starting a new one creates an additional history entry.
+                A previous investigation exists — starting a new one creates an
+                additional history entry.
               </p>
             )}
 
@@ -320,18 +357,27 @@ function InvestigationPage() {
                 onClick={startInvestigation}
                 className={cn(
                   "min-w-56",
-                  mode === "crew" && "bg-warning text-warning-foreground hover:bg-warning/90",
+                  mode === "crew" &&
+                    "bg-warning text-warning-foreground hover:bg-warning/90",
                 )}
               >
                 {mode === "standard" ? (
-                  <><Zap className="h-4 w-4" />Quick Investigation</>
+                  <>
+                    <Zap className="h-4 w-4" />
+                    Quick Investigation
+                  </>
                 ) : (
-                  <><Brain className="h-4 w-4" />Deep Investigation (CrewAI)</>
+                  <>
+                    <Brain className="h-4 w-4" />
+                    Deep Investigation (CrewAI)
+                  </>
                 )}
               </Button>
               <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <AlertTriangle className="h-3 w-3 text-warning" />
-                {mode === "standard" ? "~1 AI credit" : "~3 AI credits · takes 60-90s"}
+                {mode === "standard"
+                  ? "~1 AI credit"
+                  : "~3 AI credits · takes 60-90s"}
               </p>
             </div>
           </div>
@@ -354,9 +400,15 @@ function InvestigationPage() {
               <div
                 ref={terminalRef}
                 className="max-h-96 overflow-auto whitespace-pre-wrap p-4 text-xs text-foreground/90"
-                style={{ fontFamily: "'JetBrains Mono', ui-monospace, monospace" }}
+                style={{
+                  fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                }}
               >
-                {output || <span className="text-muted-foreground">Awaiting output…</span>}
+                {output || (
+                  <span className="text-muted-foreground">
+                    Awaiting output…
+                  </span>
+                )}
                 <span className="ml-0.5 inline-block h-3 w-1.5 animate-pulse bg-primary" />
               </div>
             ) : (
@@ -366,19 +418,26 @@ function InvestigationPage() {
                   <Brain className="h-6 w-6 text-warning" />
                 </div>
                 <div className="text-center">
-                  <p className="text-sm font-medium">CrewAI agents are working…</p>
+                  <p className="text-sm font-medium">
+                    CrewAI agents are working…
+                  </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    3 agents collaborating in sequence. This takes 60–90 seconds.
+                    3 agents collaborating in sequence. This takes 60–90
+                    seconds.
                   </p>
                 </div>
                 <div className="flex gap-2 text-xs text-muted-foreground">
-                  {["Retriever", "Analyst", "Recommender", "Reporter"].map((a, i) => (
-                    <span key={a} className="flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-warning/60 animate-pulse"
-                        style={{ animationDelay: `${i * 300}ms` }} />
-                      {a}
-                    </span>
-                  ))}
+                  {["Retriever", "Analyst", "Recommender", "Reporter"].map(
+                    (a, i) => (
+                      <span key={a} className="flex items-center gap-1">
+                        <span
+                          className="h-1.5 w-1.5 rounded-full bg-warning/60 animate-pulse"
+                          style={{ animationDelay: `${i * 300}ms` }}
+                        />
+                        {a}
+                      </span>
+                    ),
+                  )}
                 </div>
               </div>
             )}
@@ -391,7 +450,8 @@ function InvestigationPage() {
             {report.investigation_mode === "crew" && (
               <div className="flex items-center gap-2 rounded-lg border border-warning/30 bg-warning/5 px-4 py-2.5 text-xs text-warning">
                 <Brain className="h-3.5 w-3.5" />
-                This report was generated by the CrewAI deep investigation (3 specialised agents).
+                This report was generated by the CrewAI deep investigation (3
+                specialised agents).
               </div>
             )}
             <ReportView

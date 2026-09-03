@@ -12,9 +12,10 @@ export function ErrorComponent({ error }: { error: Error }) {
         Something went wrong
       </h1>
       <p className="mb-8 max-w-md text-muted-foreground">
-        {error?.message || "An unexpected error occurred while loading this module."}
+        {error?.message ||
+          "An unexpected error occurred while loading this module."}
       </p>
-      
+
       <div className="flex gap-4">
         <Button onClick={() => window.location.reload()} variant="outline">
           <RotateCcw className="mr-2 h-4 w-4" />

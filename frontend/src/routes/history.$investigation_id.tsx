@@ -37,11 +37,14 @@ function HistoryDetail() {
   const { data, isLoading } = useQuery({
     queryKey: ["history", investigation_id],
     queryFn: () =>
-      api.get<InvestigationReport>(`/api/v1/investigate/history/${investigation_id}`),
+      api.get<InvestigationReport>(
+        `/api/v1/investigate/history/${investigation_id}`,
+      ),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () => api.del(`/api/v1/investigate/history/${investigation_id}`),
+    mutationFn: () =>
+      api.del(`/api/v1/investigate/history/${investigation_id}`),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["history"] });
       toast.success("Investigation deleted");
@@ -92,8 +95,8 @@ function HistoryDetail() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this investigation?</AlertDialogTitle>
             <AlertDialogDescription>
-              Investigation #{investigation_id} will be permanently deleted.
-              The incident and documents are not affected.
+              Investigation #{investigation_id} will be permanently deleted. The
+              incident and documents are not affected.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

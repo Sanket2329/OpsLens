@@ -44,17 +44,46 @@ const MAX = 20 * 1024 * 1024;
 
 // ─── Index status badge ────────────────────────────────────────────────────────
 function IndexStatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-    pending:  { label: "Pending",  color: "text-muted-foreground bg-muted/30 border-border",           icon: <Clock className="h-3 w-3" /> },
-    indexing: { label: "Indexing", color: "text-warning bg-warning/10 border-warning/30",              icon: <Loader2 className="h-3 w-3 animate-spin" /> },
-    indexed:  { label: "Indexed",  color: "text-success bg-success/10 border-success/30",              icon: <CheckCircle2 className="h-3 w-3" /> },
-    partial:  { label: "Partial",  color: "text-warning bg-warning/10 border-warning/30",              icon: <AlertTriangle className="h-3 w-3" /> },
-    failed:   { label: "Failed",   color: "text-danger bg-danger/10 border-danger/30",                 icon: <AlertCircle className="h-3 w-3" /> },
+  const map: Record<
+    string,
+    { label: string; color: string; icon: React.ReactNode }
+  > = {
+    pending: {
+      label: "Pending",
+      color: "text-muted-foreground bg-muted/30 border-border",
+      icon: <Clock className="h-3 w-3" />,
+    },
+    indexing: {
+      label: "Indexing",
+      color: "text-warning bg-warning/10 border-warning/30",
+      icon: <Loader2 className="h-3 w-3 animate-spin" />,
+    },
+    indexed: {
+      label: "Indexed",
+      color: "text-success bg-success/10 border-success/30",
+      icon: <CheckCircle2 className="h-3 w-3" />,
+    },
+    partial: {
+      label: "Partial",
+      color: "text-warning bg-warning/10 border-warning/30",
+      icon: <AlertTriangle className="h-3 w-3" />,
+    },
+    failed: {
+      label: "Failed",
+      color: "text-danger bg-danger/10 border-danger/30",
+      icon: <AlertCircle className="h-3 w-3" />,
+    },
   };
   const s = map[status] ?? map["pending"];
   return (
-    <span className={cn("inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px] font-medium", s.color)}>
-      {s.icon}{s.label}
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px] font-medium",
+        s.color,
+      )}
+    >
+      {s.icon}
+      {s.label}
     </span>
   );
 }
@@ -81,12 +110,17 @@ function DocumentsPage() {
   });
 
   const reindex = useMutation({
-    mutationFn: (id: number) => api.post<{ new_chunks_indexed: number; total_chunks: number; index_status: string }>(
-      `/api/v1/documents/${id}/reindex`
-    ),
+    mutationFn: (id: number) =>
+      api.post<{
+        new_chunks_indexed: number;
+        total_chunks: number;
+        index_status: string;
+      }>(`/api/v1/documents/${id}/reindex`),
     onSuccess: (result) => {
       qc.invalidateQueries({ queryKey: ["documents"] });
-      toast.success(`Re-indexed: ${result.total_chunks} chunks (${result.index_status})`);
+      toast.success(
+        `Re-indexed: ${result.total_chunks} chunks (${result.index_status})`,
+      );
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -123,7 +157,11 @@ function DocumentsPage() {
         // Just track upload progress here, then close
         xhr.upload.onprogress = (e) => {
           if (e.lengthComputable) {
-            setUploadState((s) => s ? { ...s, uploadPct: Math.round((e.loaded / e.total) * 100) } : null);
+            setUploadState((s) =>
+              s
+                ? { ...s, uploadPct: Math.round((e.loaded / e.total) * 100) }
+                : null,
+            );
           }
         };
         xhr.onload = () => resolve();
@@ -138,7 +176,13 @@ function DocumentsPage() {
     }
 
     // Phase 2: Use fetch + SSE for the streaming upload+index endpoint
-    setUploadState({ phase: "uploading", uploadPct: 100, chunksDone: 0, chunksTotal: 0, filename: file.name });
+    setUploadState({
+      phase: "uploading",
+      uploadPct: 100,
+      chunksDone: 0,
+      chunksTotal: 0,
+      filename: file.name,
+    });
 
     try {
       const token = getToken();
@@ -151,9 +195,10 @@ function DocumentsPage() {
         body: fd,
       });
 
-      if (!res.ok || !res.body) throw new Error(`Upload failed (${res.status})`);
+      if (!res.ok || !res.body)
+        throw new Error(`Upload failed (${res.status})`);
 
-      setUploadState((s) => s ? { ...s, phase: "indexing" } : null);
+      setUploadState((s) => (s ? { ...s, phase: "indexing" } : null));
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -174,33 +219,46 @@ function DocumentsPage() {
           try {
             const data = JSON.parse(payload);
             if (data.type === "progress") {
-              setUploadState((s) => s ? {
-                ...s,
-                phase: "indexing",
-                chunksDone: data.chunks_done,
-                chunksTotal: data.chunks_total,
-              } : null);
+              setUploadState((s) =>
+                s
+                  ? {
+                      ...s,
+                      phase: "indexing",
+                      chunksDone: data.chunks_done,
+                      chunksTotal: data.chunks_total,
+                    }
+                  : null,
+              );
             } else if (data.type === "done") {
-              setUploadState((s) => s ? {
-                ...s,
-                phase: "done",
-                chunksDone: data.chunk_count ?? data.chunks_total,
-                chunksTotal: data.chunks_total,
-              } : null);
-              toast.success(`${file.name} — ${data.chunk_count ?? 0} chunks indexed`);
+              setUploadState((s) =>
+                s
+                  ? {
+                      ...s,
+                      phase: "done",
+                      chunksDone: data.chunk_count ?? data.chunks_total,
+                      chunksTotal: data.chunks_total,
+                    }
+                  : null,
+              );
+              toast.success(
+                `${file.name} — ${data.chunk_count ?? 0} chunks indexed`,
+              );
               qc.invalidateQueries({ queryKey: ["documents"] });
             } else if (data.type === "error") {
               throw new Error(data.detail ?? "Indexing failed");
             }
           } catch (parseErr) {
-            if (parseErr instanceof Error && parseErr.message !== "Unexpected token") {
+            if (
+              parseErr instanceof Error &&
+              parseErr.message !== "Unexpected token"
+            ) {
               throw parseErr;
             }
           }
         }
       }
     } catch (e) {
-      setUploadState((s) => s ? { ...s, phase: "error" } : null);
+      setUploadState((s) => (s ? { ...s, phase: "error" } : null));
       toast.error(e instanceof Error ? e.message : "Upload failed");
       qc.invalidateQueries({ queryKey: ["documents"] });
     } finally {
@@ -211,10 +269,12 @@ function DocumentsPage() {
   return (
     <AppShell title="Documents">
       <div className="mx-auto max-w-6xl space-y-6">
-
         {/* Upload zone */}
         <div
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
           onDragLeave={() => setDragOver(false)}
           onDrop={(e) => {
             e.preventDefault();
@@ -225,7 +285,9 @@ function DocumentsPage() {
           onClick={() => !uploadState && inputRef.current?.click()}
           className={cn(
             "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-10 text-center transition",
-            dragOver ? "border-primary bg-primary/5" : "border-border bg-card hover:bg-card-elevated/50",
+            dragOver
+              ? "border-primary bg-primary/5"
+              : "border-border bg-card hover:bg-card-elevated/50",
             uploadState && "cursor-default opacity-80",
           )}
         >
@@ -239,23 +301,33 @@ function DocumentsPage() {
 
           {!uploadState && (
             <>
-              <div className="text-sm font-medium">Drag & drop a document here</div>
-              <div className="text-xs text-muted-foreground">or click to browse — PDF, TXT, MD · max 20MB</div>
+              <div className="text-sm font-medium">
+                Drag & drop a document here
+              </div>
+              <div className="text-xs text-muted-foreground">
+                or click to browse — PDF, TXT, MD · max 20MB
+              </div>
             </>
           )}
 
           {uploadState && (
             <div className="w-full max-w-md space-y-2">
-              <div className="text-sm font-medium truncate">{uploadState.filename}</div>
+              <div className="text-sm font-medium truncate">
+                {uploadState.filename}
+              </div>
 
               {/* Upload progress */}
               {uploadState.phase === "uploading" && (
                 <>
                   <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                    <div className="h-full bg-primary transition-[width] duration-300"
-                      style={{ width: `${uploadState.uploadPct}%` }} />
+                    <div
+                      className="h-full bg-primary transition-[width] duration-300"
+                      style={{ width: `${uploadState.uploadPct}%` }}
+                    />
                   </div>
-                  <div className="text-xs text-muted-foreground">Uploading… {uploadState.uploadPct}%</div>
+                  <div className="text-xs text-muted-foreground">
+                    Uploading… {uploadState.uploadPct}%
+                  </div>
                 </>
               )}
 
@@ -266,9 +338,10 @@ function DocumentsPage() {
                     <div
                       className="h-full bg-success transition-[width] duration-300"
                       style={{
-                        width: uploadState.chunksTotal > 0
-                          ? `${Math.round((uploadState.chunksDone / uploadState.chunksTotal) * 100)}%`
-                          : "5%",
+                        width:
+                          uploadState.chunksTotal > 0
+                            ? `${Math.round((uploadState.chunksDone / uploadState.chunksTotal) * 100)}%`
+                            : "5%",
                       }}
                     />
                   </div>
@@ -342,7 +415,9 @@ function DocumentsPage() {
                     <td className="px-4 py-3 font-medium">
                       <div className="flex items-center gap-2">
                         <FileText className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                        <span className="truncate max-w-xs">{d.original_filename}</span>
+                        <span className="truncate max-w-xs">
+                          {d.original_filename}
+                        </span>
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -352,16 +427,24 @@ function DocumentsPage() {
                       {d.chunk_count != null ? (
                         <span className="tabular-nums text-xs font-medium">
                           {d.chunk_count}
-                          {d.chunks_total != null && d.chunks_total !== d.chunk_count && (
-                            <span className="text-muted-foreground"> / {d.chunks_total}</span>
-                          )}
+                          {d.chunks_total != null &&
+                            d.chunks_total !== d.chunk_count && (
+                              <span className="text-muted-foreground">
+                                {" "}
+                                / {d.chunks_total}
+                              </span>
+                            )}
                         </span>
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">{formatBytes(d.file_size)}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{formatRelative(d.created_at)}</td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {formatBytes(d.file_size)}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {formatRelative(d.created_at)}
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
                         <Button
@@ -371,7 +454,12 @@ function DocumentsPage() {
                           disabled={reindex.isPending}
                           title="Re-index document"
                         >
-                          <RefreshCw className={cn("h-3.5 w-3.5", reindex.isPending && "animate-spin")} />
+                          <RefreshCw
+                            className={cn(
+                              "h-3.5 w-3.5",
+                              reindex.isPending && "animate-spin",
+                            )}
+                          />
                           Re-index
                         </Button>
                         <Button
@@ -394,13 +482,16 @@ function DocumentsPage() {
       </div>
 
       {/* Delete confirmation */}
-      <AlertDialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
+      <AlertDialog
+        open={!!toDelete}
+        onOpenChange={(o) => !o && setToDelete(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete document?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove "{toDelete?.original_filename}" and all its
-              embeddings from the knowledge base.
+              This will permanently remove "{toDelete?.original_filename}" and
+              all its embeddings from the knowledge base.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

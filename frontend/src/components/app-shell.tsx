@@ -1,4 +1,10 @@
-import { type ReactNode, useEffect, useRef, useState, useCallback } from "react";
+import {
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Command } from "cmdk";
 import {
@@ -36,22 +42,41 @@ const nav = [
 
 // ─── Search palette ────────────────────────────────────────────────────────────
 const searchItems = [
-  { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard, group: "Pages" },
+  {
+    label: "Dashboard",
+    to: "/dashboard",
+    icon: LayoutDashboard,
+    group: "Pages",
+  },
   { label: "Incidents", to: "/incidents", icon: AlertOctagon, group: "Pages" },
-  { label: "Investigation", to: "/investigate", icon: Sparkles, group: "Pages" },
+  {
+    label: "Investigation",
+    to: "/investigate",
+    icon: Sparkles,
+    group: "Pages",
+  },
   { label: "Documents", to: "/documents", icon: FileText, group: "Pages" },
   { label: "Chat", to: "/chat", icon: MessageSquare, group: "Pages" },
   { label: "History", to: "/history", icon: HistoryIcon, group: "Pages" },
   { label: "Settings", to: "/settings", icon: SettingsIcon, group: "Pages" },
 ];
 
-function SearchPalette({ onClose, open }: { onClose: () => void, open: boolean }) {
+function SearchPalette({
+  onClose,
+  open,
+}: {
+  onClose: () => void;
+  open: boolean;
+}) {
   const navigate = useNavigate();
 
-  const runCommand = useCallback((command: () => unknown) => {
-    onClose();
-    command();
-  }, [onClose]);
+  const runCommand = useCallback(
+    (command: () => unknown) => {
+      onClose();
+      command();
+    },
+    [onClose],
+  );
 
   return (
     <Command.Dialog
@@ -68,14 +93,21 @@ function SearchPalette({ onClose, open }: { onClose: () => void, open: boolean }
         />
       </div>
       <Command.List className="max-h-80 overflow-y-auto p-2">
-        <Command.Empty className="py-6 text-center text-sm text-muted-foreground">No results found.</Command.Empty>
-        <Command.Group heading="Pages" className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+        <Command.Empty className="py-6 text-center text-sm text-muted-foreground">
+          No results found.
+        </Command.Empty>
+        <Command.Group
+          heading="Pages"
+          className="px-2 py-1.5 text-xs font-medium text-muted-foreground"
+        >
           {searchItems.map((item) => {
             const Icon = item.icon;
             return (
               <Command.Item
                 key={item.to}
-                onSelect={() => runCommand(() => navigate({ to: item.to as "/" }))}
+                onSelect={() =>
+                  runCommand(() => navigate({ to: item.to as "/" }))
+                }
                 className="relative flex cursor-pointer select-none items-center rounded-md px-3 py-2 text-sm outline-none aria-selected:bg-card-elevated aria-selected:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-foreground mt-1"
               >
                 <Icon className="mr-3 h-4 w-4 text-muted-foreground" />
@@ -86,8 +118,12 @@ function SearchPalette({ onClose, open }: { onClose: () => void, open: boolean }
         </Command.Group>
       </Command.List>
       <div className="border-t border-border px-4 py-2 flex gap-3 text-[10px] text-muted-foreground">
-        <span><kbd className="rounded border border-border px-1">↵</kbd> select</span>
-        <span><kbd className="rounded border border-border px-1">Esc</kbd> close</span>
+        <span>
+          <kbd className="rounded border border-border px-1">↵</kbd> select
+        </span>
+        <span>
+          <kbd className="rounded border border-border px-1">Esc</kbd> close
+        </span>
       </div>
     </Command.Dialog>
   );
@@ -95,16 +131,36 @@ function SearchPalette({ onClose, open }: { onClose: () => void, open: boolean }
 
 // ─── Notifications panel ───────────────────────────────────────────────────────
 const MOCK_NOTIFICATIONS = [
-  { id: 1, title: "Investigation complete", body: "Root cause identified for API latency spike.", time: "2m ago", read: false },
-  { id: 2, title: "Document indexed", body: "runbook.pdf has been indexed successfully.", time: "1h ago", read: false },
-  { id: 3, title: "Incident resolved", body: "Payment API incident marked as resolved.", time: "3h ago", read: true },
+  {
+    id: 1,
+    title: "Investigation complete",
+    body: "Root cause identified for API latency spike.",
+    time: "2m ago",
+    read: false,
+  },
+  {
+    id: 2,
+    title: "Document indexed",
+    body: "runbook.pdf has been indexed successfully.",
+    time: "1h ago",
+    read: false,
+  },
+  {
+    id: 3,
+    title: "Incident resolved",
+    body: "Payment API incident marked as resolved.",
+    time: "3h ago",
+    read: true,
+  },
 ];
 
 function NotificationsPanel({ onClose }: { onClose: () => void }) {
   const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
 
   useEffect(() => {
-    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
@@ -119,7 +175,10 @@ function NotificationsPanel({ onClose }: { onClose: () => void }) {
       <div className="absolute right-0 top-10 z-50 w-80 rounded-xl border border-border bg-card shadow-2xl">
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <span className="text-sm font-semibold">Notifications</span>
-          <button onClick={markAllRead} className="text-xs text-primary hover:underline">
+          <button
+            onClick={markAllRead}
+            className="text-xs text-primary hover:underline"
+          >
             Mark all read
           </button>
         </div>
@@ -131,14 +190,22 @@ function NotificationsPanel({ onClose }: { onClose: () => void }) {
                 "flex gap-3 px-4 py-3 border-b border-border last:border-0 cursor-pointer hover:bg-card-elevated/50",
                 !n.read && "bg-primary/5",
               )}
-              onClick={() => setNotifications((prev) => prev.map((x) => x.id === n.id ? { ...x, read: true } : x))}
+              onClick={() =>
+                setNotifications((prev) =>
+                  prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)),
+                )
+              }
             >
-              {!n.read && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" />}
+              {!n.read && (
+                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" />
+              )}
               {n.read && <span className="mt-1.5 h-2 w-2 shrink-0" />}
               <div className="min-w-0">
                 <p className="text-xs font-medium">{n.title}</p>
                 <p className="text-xs text-muted-foreground">{n.body}</p>
-                <p className="mt-1 text-[10px] text-muted-foreground">{n.time}</p>
+                <p className="mt-1 text-[10px] text-muted-foreground">
+                  {n.time}
+                </p>
               </div>
             </div>
           ))}
@@ -154,7 +221,9 @@ function ProfileDropdown({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
@@ -165,21 +234,29 @@ function ProfileDropdown({ onClose }: { onClose: () => void }) {
       <div className="absolute right-0 top-10 z-50 w-56 rounded-xl border border-border bg-card shadow-2xl overflow-hidden">
         <div className="border-b border-border px-4 py-3">
           <p className="text-sm font-medium truncate">{user?.name}</p>
-          <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+          <p className="text-xs text-muted-foreground truncate">
+            {user?.email}
+          </p>
           <span className="mt-1 inline-flex items-center rounded border border-border bg-card-elevated px-1.5 py-0.5 text-[10px] capitalize">
             {user?.role}
           </span>
         </div>
         <div className="p-1">
           <button
-            onClick={() => { navigate({ to: "/settings" }); onClose(); }}
+            onClick={() => {
+              navigate({ to: "/settings" });
+              onClose();
+            }}
             className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-card-elevated"
           >
             <User className="h-3.5 w-3.5 text-muted-foreground" />
             Profile & Settings
           </button>
           <button
-            onClick={() => { logout(); onClose(); }}
+            onClick={() => {
+              logout();
+              onClose();
+            }}
             className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-danger hover:bg-danger/10"
           >
             <LogOut className="h-3.5 w-3.5" />
@@ -228,9 +305,12 @@ export function AppShell({
     <div className="flex min-h-screen w-full bg-background text-foreground">
       {/* Search palette */}
       <SearchPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
-      
+
       {searchOpen && (
-        <div className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm animate-in fade-in" onClick={() => setSearchOpen(false)} />
+        <div
+          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm animate-in fade-in"
+          onClick={() => setSearchOpen(false)}
+        />
       )}
 
       {/* Sidebar */}
@@ -242,11 +322,7 @@ export function AppShell({
       >
         {/* Logo */}
         <div className="flex h-14 items-center gap-2.5 border-b border-border px-3">
-          <img
-            src="/opslens.png"
-            alt="OpsLens"
-            className="h-8 w-8 shrink-0"
-          />
+          <img src="/opslens.png" alt="OpsLens" className="h-8 w-8 shrink-0" />
           {!collapsed && (
             <div className="min-w-0">
               <span className="block text-sm font-bold tracking-tight">
@@ -311,7 +387,9 @@ export function AppShell({
             {!collapsed && (
               <>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-xs font-medium">{user?.name}</div>
+                  <div className="truncate text-xs font-medium">
+                    {user?.name}
+                  </div>
                   <div className="text-[10px] text-muted-foreground capitalize">
                     {user?.role ?? "member"}
                   </div>
@@ -336,7 +414,8 @@ export function AppShell({
             <Search className="h-3.5 w-3.5 shrink-0" />
             <span className="flex-1 text-left">Search pages…</span>
             <kbd className="hidden sm:flex rounded border border-border bg-background px-1.5 py-0.5 text-[10px] gap-0.5 items-center">
-              <span>⌘</span><span>K</span>
+              <span>⌘</span>
+              <span>K</span>
             </kbd>
           </button>
 
@@ -349,7 +428,11 @@ export function AppShell({
               size="icon"
               className="h-8 w-8"
               onClick={toggle}
-              title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              title={
+                theme === "dark"
+                  ? "Switch to light mode"
+                  : "Switch to dark mode"
+              }
             >
               {theme === "dark" ? (
                 <Sun className="h-4 w-4" />
@@ -364,7 +447,10 @@ export function AppShell({
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8"
-                onClick={() => { setNotifOpen((o) => !o); setProfileOpen(false); }}
+                onClick={() => {
+                  setNotifOpen((o) => !o);
+                  setProfileOpen(false);
+                }}
               >
                 <Bell className="h-4 w-4" />
                 {unreadCount > 0 && (
@@ -381,7 +467,10 @@ export function AppShell({
             {/* Profile */}
             <div className="relative">
               <button
-                onClick={() => { setProfileOpen((o) => !o); setNotifOpen(false); }}
+                onClick={() => {
+                  setProfileOpen((o) => !o);
+                  setNotifOpen(false);
+                }}
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary hover:ring-2 hover:ring-primary/40 transition-all"
               >
                 {user?.name?.[0]?.toUpperCase() ?? "?"}

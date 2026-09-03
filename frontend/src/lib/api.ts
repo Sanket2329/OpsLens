@@ -22,7 +22,10 @@ export function clearToken() {
   localStorage.removeItem(TOKEN_KEY);
 }
 
-async function fetchWithAuth<T>(path: string, options: RequestInit = {}): Promise<T> {
+async function fetchWithAuth<T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<T> {
   const token = getToken();
   const headers = new Headers(options.headers);
   headers.set("Content-Type", "application/json");
@@ -40,7 +43,10 @@ async function fetchWithAuth<T>(path: string, options: RequestInit = {}): Promis
   if (!response.ok) {
     if (response.status === 401) {
       clearToken();
-      if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+      if (
+        typeof window !== "undefined" &&
+        window.location.pathname !== "/login"
+      ) {
         window.location.href = "/login";
       }
     }
@@ -63,12 +69,12 @@ export const baseUrl = import.meta.env.VITE_API_URL || "";
 export const api = {
   baseUrl,
   get: <T>(path: string) => fetchWithAuth<T>(path, { method: "GET" }),
-  post: <T>(path: string, data?: any) =>
+  post: <T>(path: string, data?: unknown) =>
     fetchWithAuth<T>(path, {
       method: "POST",
       body: data ? JSON.stringify(data) : undefined,
     }),
-  patch: <T>(path: string, data?: any) =>
+  patch: <T>(path: string, data?: unknown) =>
     fetchWithAuth<T>(path, {
       method: "PATCH",
       body: data ? JSON.stringify(data) : undefined,
