@@ -46,6 +46,9 @@ Simply type in a description of an ongoing outage (e.g., *"The payment gateway A
 ### 📚 Knowledge Base Management (RAG)
 Upload your organization's PDF runbooks, disaster recovery plans, and architecture diagrams directly into OpsLens. The platform uses an advanced **Retrieval-Augmented Generation (RAG)** pipeline to contextually chunk and embed your documents into a **Qdrant Vector Database**. This guarantees that the AI always draws upon your company's actual, private infrastructure data instead of hallucinating answers.
 
+### 📈 Live Grafana & Prometheus Integration
+OpsLens AI agents don't just read static PDFs—they can look at your live servers! The Analyst agent is equipped with a custom Tool that securely queries your **Grafana Cloud / Prometheus** HTTP APIs using PromQL. If the AI suspects a memory leak based on a runbook, it will autonomously pull the live memory metrics to prove it before generating the RCA.
+
 ### ⚡ Asynchronous Background Processing
 Heavy AI tasks—like chunking a 100-page runbook, generating thousands of vector embeddings via Google Gemini, or waiting for multi-agent workflows—are seamlessly offloaded to background **Celery workers** backed by **Redis**. This ensures the FastAPI backend and React frontend remain lightning-fast and perfectly responsive at all times.
 

@@ -85,6 +85,9 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRE_MINUTES: "60"
 
+      GRAFANA_API_URL: ${GRAFANA_API_URL}
+      GRAFANA_API_KEY: ${GRAFANA_API_KEY}
+
       REDIS_URL: redis://redis:6379/0
 
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
@@ -166,6 +169,8 @@ services:
       GEMINI_MODEL: gemini-2.5-flash
       GEMINI_EMBEDDING_MODEL: gemini-embedding-001
       JWT_SECRET: ${JWT_SECRET}
+      GRAFANA_API_URL: ${GRAFANA_API_URL}
+      GRAFANA_API_KEY: ${GRAFANA_API_KEY}
     volumes:
       - uploads_data:/app/uploads
 

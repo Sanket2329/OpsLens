@@ -84,3 +84,51 @@ class VectorSearchTool(BaseTool):
             )
 
         return "\n\n".join(lines)
+
+
+class GrafanaMetricsInput(BaseModel):
+    query: str = Field(description="The PromQL query to execute against Grafana/Prometheus (e.g. 'sum(rate(http_requests_total[5m]))')")
+
+class GrafanaMetricsTool(BaseTool):
+    """
+    Query live metrics from Grafana/Prometheus to gather quantitative evidence.
+    """
+
+    name: str = "query_live_metrics"
+    description: str = (
+        "Use this tool to query live Prometheus metrics via Grafana to see CPU, "
+        "memory, and HTTP error rates. Input MUST be a valid PromQL query. "
+        "Use this when you suspect a specific component is failing and need "
+        "hard metric data to prove it (e.g., finding a spike in 5xx errors)."
+    )
+    args_schema: Type[BaseModel] = GrafanaMetricsInput
+
+    def _run(self, query: str) -> str:
+        from app.config.settings import settings
+        import requests
+
+        if not settings.grafana_api_url:
+            return "Grafana API is not configured. Unable to fetch live metrics."
+
+        url = settings.grafana_api_url
+        headers = {}
+        if settings.grafana_api_key:
+            headers["Authorization"] = f"Bearer {settings.grafana_api_key}"
+
+        try:
+            response = requests.get(url, headers=headers, params={"query": query}, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            
+            # Extract just the result list to save tokens
+            result_data = data.get('data', {}).get('result', [])
+            if not result_data:
+                return f"Query returned no data: {query}"
+            
+            # Trim large results to avoid token bloat
+            if len(str(result_data)) > 1000:
+                return f"Query successful. Data snippet: {str(result_data)[:1000]}..."
+                
+            return f"Query successful. Data: {str(result_data)}"
+        except Exception as e:
+            return f"Failed to fetch metrics from Grafana: {str(e)}"

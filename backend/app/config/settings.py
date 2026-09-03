@@ -48,6 +48,10 @@ class Settings(BaseSettings):
     slack_webhook_url: str = ""
     slack_enabled: bool = False
 
+    # Grafana Integration (optional)
+    grafana_api_url: str = ""
+    grafana_api_key: str = ""
+
     @property
     def allowed_extensions_list(self) -> list[str]:
         return [ext.strip().lower() for ext in self.allowed_extensions.split(",")]

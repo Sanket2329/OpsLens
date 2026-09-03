@@ -28,6 +28,7 @@ from app.config.settings import settings
 from app.core.logging import get_logger
 from app.services.embedding_service import EmbeddingService
 from app.services.vector_store import VectorStore
+from app.agents.tools import GrafanaMetricsTool
 
 logger = get_logger(__name__)
 
@@ -101,7 +102,7 @@ class OpsLensInvestigationCrew:
             role="Senior Site Reliability Engineer",
             goal=(
                 "Diagnose the root cause of this production incident using "
-                "ONLY the provided evidence. Never speculate beyond evidence. "
+                "the provided evidence and live metrics queried via your Grafana tool. "
                 "Distinguish confirmed facts from hypotheses from unknowns. "
                 "Assign an evidence-based confidence score."
             ),
@@ -113,6 +114,7 @@ class OpsLensInvestigationCrew:
                 "never fill knowledge gaps with assumptions."
             ),
             llm=_LLM,
+            tools=[GrafanaMetricsTool()],
             verbose=False,
             allow_delegation=False,
         )
@@ -176,9 +178,9 @@ RETRIEVED DOCUMENTATION EVIDENCE
 ═══════════════════════════════
 RULES — NEVER VIOLATE
 ═══════════════════════════════
-1. NEVER invent facts. Every claim must cite specific retrieved evidence above.
-2. If evidence is insufficient, say "Unable to Determine" — do NOT guess.
-3. Separate FACTS (from incident description) from INFERENCES (your reasoning).
+1. NEVER invent facts. Every claim must cite specific retrieved evidence above, OR data you successfully queried via your live metrics tool.
+2. If evidence is insufficient and metrics don't show the root cause, say "Unable to Determine" — do NOT guess.
+3. Separate FACTS (from incident description/metrics) from INFERENCES (your reasoning).
 4. root_cause_status must be: "Confirmed" | "Likely" | "Unable to Determine"
    - "Confirmed" ONLY if documentation explicitly describes this exact failure.
    - "Likely" if evidence strongly suggests but is not definitive.
