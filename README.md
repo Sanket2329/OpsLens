@@ -118,10 +118,14 @@ git clone https://github.com/Sanket2329/OpsLens.git
 cd OpsLens
 cp backend/.env.example backend/.env
 ```
-Open `backend/.env` and update your Gemini key and JWT secret:
+Open `backend/.env` and update your Gemini key, JWT secret, and (optionally) your Grafana integration credentials:
 ```env
 GEMINI_API_KEY=your-gemini-api-key
 JWT_SECRET=super_secure_random_string_here
+
+# Optional: For Live Server Metrics
+GRAFANA_API_URL=https://your-grafana-domain.net/api/datasources/proxy/uid/<uid>/api/v1/query
+GRAFANA_API_KEY=glsa_...
 ```
 
 ### 2. Launch the Microservices
