@@ -85,6 +85,8 @@ graph TD
     
     API -->|Query| Qdrant
     API -->|RAG Generation| CrewAI[CrewAI / Gemini 2.5 Flash]
+    
+    CrewAI -->|Live Metrics Tool| Grafana[(Grafana / Prometheus)]
 ```
 
 </details>
