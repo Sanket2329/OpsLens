@@ -164,5 +164,5 @@ This project is open-sourced under the **MIT License**. See the [LICENSE](LICENS
 <br />
 
 <div align="center">
-  <sub>Built with ❤️ for Site Reliability Engineers everywhere.</sub>
+  <sub>For Site Reliability Engineers everywhere.</sub>
 </div>
